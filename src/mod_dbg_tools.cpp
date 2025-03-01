@@ -42,7 +42,7 @@ class DbgToolsPlayer : public PlayerScript
 public:
     DbgToolsPlayer() : PlayerScript("PlayerDbgToolsPlayer") { }
 
-    void OnLogin(Player* player) override
+    void OnPlayerLogin(Player* player) override
     {
         if (player->GetSession()->GetSecurity() >= SEC_ADMINISTRATOR)
         {
@@ -50,7 +50,7 @@ public:
         }
     }
 
-    void OnLogout(Player* /*player*/) override
+    void OnPlayerLogout(Player* /*player*/) override
     {
     }
 };
