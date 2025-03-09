@@ -67,9 +67,15 @@ public:
             { "dailies",  HandleResetDailiesCommand, SEC_ADMINISTRATOR, Console::No },
         };
 
+        static ChatCommandTable DbgToolsSwpCommandTable =
+        {
+            { "mad",  HandleResetMadrigosaCommand, SEC_ADMINISTRATOR, Console::No },
+        };
+
         static ChatCommandTable DbgToolsCommandTable =
         {
-            { "reset",  DbgToolsResetCommandTable }
+            { "reset",  DbgToolsResetCommandTable },
+            { "swp",  DbgToolsSwpCommandTable }
         };
 
         static ChatCommandTable DbgToolsBaseTable =
@@ -88,6 +94,24 @@ public:
             return false;
         player->ResetDailyQuestStatus();
         handler->PSendSysMessage("[DBG]::Player::ResetDailyQuestStatus()::Dailies have been reset!");
+        return true;
+    }
+
+    // Action to start Intro Event
+    static bool HandleResetMadrigosaCommand(ChatHandler* handler)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+
+        if (!player)
+            return false;
+
+        if (auto madrigosa = player->FindNearestCreature(24895, 500.0f))
+        {
+            madrigosa->AI()->DoAction(1); // Start Event
+            handler->PSendSysMessage("[DBG]::Player::HandleResetMadrigosaCommand set action done!");
+        }
+        else
+            handler->PSendSysMessage("[DBG]::Player::HandleResetMadrigosaCommand Madrigosa Not found!");
         return true;
     }
 };
