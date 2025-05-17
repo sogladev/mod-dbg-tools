@@ -68,9 +68,14 @@ public:
             {"vapor",   HandleCastVaporCommand,      SEC_ADMINISTRATOR, Console::No},
         };
 
+        static ChatCommandTable DbgToolsUldCommandTable = {
+            {"yoggbraindmg", HandleStartYoggP3Command, SEC_ADMINISTRATOR, Console::No},
+        };
+
         static ChatCommandTable DbgToolsCommandTable = {
             {"reset", DbgToolsResetCommandTable},
-            {"swp",   DbgToolsSwpCommandTable  }
+            {"swp",   DbgToolsSwpCommandTable  },
+            {"uld",   DbgToolsUldCommandTable  }
         };
 
         static ChatCommandTable DbgToolsBaseTable = {
@@ -138,6 +143,24 @@ public:
         }
         else
             handler->PSendSysMessage("[DBG]::Player::HandleSpawnFelmystCommand Madrigosa Not found!");
+        return true;
+    }
+
+    // Action to start Yogg-Saron P3 (skip entering portal to kill tentacles/brain)
+    static bool HandleStartYoggP3Command(ChatHandler* handler)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+
+        if (!player)
+            return false;
+
+        if (auto sara = player->FindNearestCreature(33134, 500.0f))
+        {
+            sara->AI()->DoAction(-8); /*ACTION_BRAIN_DAMAGED*/
+            handler->PSendSysMessage("[DBG]::Player::HandleStartYoggP3Command brain damaged!");
+        }
+        else
+            handler->PSendSysMessage("[DBG]::Player::HandleStartYoggP3Command Not found!");
         return true;
     }
 };
