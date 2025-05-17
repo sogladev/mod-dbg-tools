@@ -63,9 +63,9 @@ public:
         };
 
         static ChatCommandTable DbgToolsSwpCommandTable = {
-            {"mad", HandleResetMadrigosaCommand, SEC_ADMINISTRATOR, Console::No},
-            {"felmyst", HandleSpawnFelmystCommand, SEC_ADMINISTRATOR, Console::No},
-            {"vapor", HandleCastVaporCommand, SEC_ADMINISTRATOR, Console::No},
+            {"mad",     HandleResetMadrigosaCommand, SEC_ADMINISTRATOR, Console::No},
+            {"felmyst", HandleSpawnFelmystCommand,   SEC_ADMINISTRATOR, Console::No},
+            {"vapor",   HandleCastVaporCommand,      SEC_ADMINISTRATOR, Console::No},
         };
 
         static ChatCommandTable DbgToolsCommandTable = {
