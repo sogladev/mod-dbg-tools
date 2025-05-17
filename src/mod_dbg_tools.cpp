@@ -10,7 +10,7 @@
 
 using namespace Acore::ChatCommands;
 
-constexpr const char* MODULE_STRING = "dbg-tools";
+constexpr char const* MODULE_STRING = "dbg-tools";
 
 enum DbgToolsStrings
 {
@@ -45,42 +45,36 @@ public:
     void OnPlayerLogin(Player* player) override
     {
         if (player->GetSession()->GetSecurity() >= SEC_ADMINISTRATOR)
-        {
             ChatHandler(player->GetSession()).PSendSysMessage("{} is enabled!", MODULE_STRING);
-        }
     }
 
-    void OnPlayerLogout(Player* /*player*/) override
-    {
-    }
+    void OnPlayerLogout(Player* /*player*/) override { }
 };
 
 class DbgToolsCommand : public CommandScript
 {
 public:
-    DbgToolsCommand() : CommandScript("DbgToolsCommand") {}
+    DbgToolsCommand() : CommandScript("DbgToolsCommand") { }
 
     ChatCommandTable GetCommands() const override
     {
-        static ChatCommandTable DbgToolsResetCommandTable =
-        {
-            { "dailies",  HandleResetDailiesCommand, SEC_ADMINISTRATOR, Console::No },
+        static ChatCommandTable DbgToolsResetCommandTable = {
+            {"dailies", HandleResetDailiesCommand, SEC_ADMINISTRATOR, Console::No},
         };
 
-        static ChatCommandTable DbgToolsSwpCommandTable =
-        {
-            { "mad",  HandleResetMadrigosaCommand, SEC_ADMINISTRATOR, Console::No },
+        static ChatCommandTable DbgToolsSwpCommandTable = {
+            {"mad", HandleResetMadrigosaCommand, SEC_ADMINISTRATOR, Console::No},
+            {"felmyst", HandleSpawnFelmystCommand, SEC_ADMINISTRATOR, Console::No},
+            {"vapor", HandleCastVaporCommand, SEC_ADMINISTRATOR, Console::No},
         };
 
-        static ChatCommandTable DbgToolsCommandTable =
-        {
-            { "reset",  DbgToolsResetCommandTable },
-            { "swp",  DbgToolsSwpCommandTable }
+        static ChatCommandTable DbgToolsCommandTable = {
+            {"reset", DbgToolsResetCommandTable},
+            {"swp",   DbgToolsSwpCommandTable  }
         };
 
-        static ChatCommandTable DbgToolsBaseTable =
-        {
-            { "dbg",  DbgToolsCommandTable }
+        static ChatCommandTable DbgToolsBaseTable = {
+            {"dbg", DbgToolsCommandTable}
         };
 
         return DbgToolsBaseTable;
@@ -94,6 +88,20 @@ public:
             return false;
         player->ResetDailyQuestStatus();
         handler->PSendSysMessage("[DBG]::Player::ResetDailyQuestStatus()::Dailies have been reset!");
+        return true;
+    }
+
+    // Vapor
+    static bool HandleCastVaporCommand(ChatHandler* handler)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+
+        if (!player)
+            return false;
+
+        player->CastCustomSpell(45391, SPELLVALUE_MAX_TARGETS, 1, player, true);
+
+        handler->PSendSysMessage("[DBG]::Player::HandleCastVaporCommand set action done!");
         return true;
     }
 
@@ -112,6 +120,24 @@ public:
         }
         else
             handler->PSendSysMessage("[DBG]::Player::HandleResetMadrigosaCommand Madrigosa Not found!");
+        return true;
+    }
+
+    // Action to spawn Felmyst
+    static bool HandleSpawnFelmystCommand(ChatHandler* handler)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+
+        if (!player)
+            return false;
+
+        if (auto madrigosa = player->FindNearestCreature(24895, 500.0f))
+        {
+            madrigosa->AI()->DoAction(2); // Spawn Felmyst
+            handler->PSendSysMessage("[DBG]::Player::HandleSpawnFelmystCommand set action done!");
+        }
+        else
+            handler->PSendSysMessage("[DBG]::Player::HandleSpawnFelmystCommand Madrigosa Not found!");
         return true;
     }
 };
